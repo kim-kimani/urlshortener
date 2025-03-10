@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content">
+  <div class="container">
+    <h2 class="mb-5">Short URLs</h2>
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Short URL</th>
+            <th>Created At</th>
+            <th>Clicks</th>
+            <th>Original URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for url in urls %}
+          <tr class="url-row">
+            <td data-label="Title">{{ url.title }}</td>
+            <td data-label="Short URL">{{ url.get_short_url }}</td>
+            <td data-label="Created At">{{ url.created_at|date:"M d, Y" }}</td>
+            <td data-label="Clicks">{{ url.click_count }}</td>
+            <td data-label="Original URL">{{ url.original_url }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Copy short URL on row click
+  document.querySelectorAll('.custom-table tbody tr').forEach(row => {
+    row.addEventListener('click', () => {
+      const shortUrl = row.querySelector('[data-label="Short URL"]').textContent;
+      navigator.clipboard.writeText(shortUrl).then(() => 
+        alert('Short URL copied!')
+      );
+    });
+  });
+</script>
+{% endblock %}

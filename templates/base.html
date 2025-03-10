@@ -1,0 +1,63 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+
+        <!-- Owl Carousel -->
+        <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        
+        <!-- Custom Style -->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+        <title>AVTR</title>
+    </head>
+    <body>
+        {% if user.is_authenticated %}
+        <header class="site-header">
+            <div class="container">
+                <h1 class="site-title">URL Shortener</h1>
+                <nav class="site-nav">
+                    <a href="{% url 'index' %}" class="btn-nav {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a>
+                    <a href="{% url 'shorten' %}" class="btn-nav {% if request.resolver_match.url_name == 'shorten' %}active{% endif %}">Shorten URL</a>
+                    <a href="{% url 'not_found' %}" class="btn-nav {% if request.resolver_match.url_name == 'not_found' %}active{% endif %}">Search</a>
+                </nav>
+            </div>
+        </header>
+        {% endif %}
+    
+
+    {% block content %}{% endblock %}
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        function copyToClipboard(element) {
+            const text = element.getAttribute('data-url');
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    element.textContent = 'Copied!';
+                    setTimeout(() => {
+                        element.textContent = 'Copy';
+                    }, 2000);
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add your JavaScript for form submission here
+        });
+    </script>
+</body>
+</html>

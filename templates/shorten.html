@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Create Short URL</h1>
+    
+    <!-- CSRF Token -->
+    <input type="hidden" id="csrfToken" value="{{ csrf_token }}">
+    
+    <!-- Input Group -->
+    <div class="input-group">
+        <input 
+            type="text" 
+            id="originalUrl" 
+            placeholder="Enter long URL here" 
+            class="url-input"
+        >
+        <button onclick="shortenUrl()" class="btn-shorten">Shorten</button>
+    </div>
+
+    <!-- Response Message -->
+    <div id="responseMessage" class="response-message hidden"></div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Short URL</th>
+                    <th>Created At</th>
+                    <th>Clicks</th>
+                    <th>Original URL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for url in urls %}
+                <tr class="url-row">
+                    <td data-label="Title">{{ url.title }}</td>
+                    <td data-label="Short URL">{{ url.get_short_url }}</td>
+                    <td data-label="Created At">{{ url.created_at|date:"M d, Y" }}</td>
+                    <td data-label="Clicks">{{ url.click_count }}</td>
+                    <td data-label="Original URL">{{ url.original_url }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function shortenUrl() {
+        const originalUrlInput = document.getElementById('originalUrl');
+        const originalUrl = originalUrlInput.value;
+        const csrfToken = document.getElementById('csrfToken').value;
+
+        if (!originalUrl) {
+            alert("Please enter a URL.");
+            return;
+        }
+
+        fetch("{% url 'shorten' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ original_url: originalUrl })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('responseMessage').textContent = data.error;
+                document.getElementById('responseMessage').classList.remove('hidden');
+            } else {
+                // Show success message
+                document.getElementById('responseMessage').textContent = `Short URL: ${data.short_url}`;
+                document.getElementById('responseMessage').classList.remove('hidden');
+
+                // Clear the input field
+                originalUrlInput.value = '';
+
+                // Optionally refresh page to show new URL
+                location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+    document.querySelectorAll('.custom-table tbody tr').forEach(row => {
+      row.addEventListener('click', () => {
+        const shortUrl = row.querySelector('[data-label="Short URL"]').textContent;
+        navigator.clipboard.writeText(shortUrl).then(() => 
+          alert('Short URL copied!')
+        );
+      });
+    });
+</script>
+
+{% endblock %}
