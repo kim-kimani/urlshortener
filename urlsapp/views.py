@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from .models import URL
@@ -63,7 +63,7 @@ def redirect_view(request, short_code):
         url.save()
         return redirect(url.original_url)
     except URL.DoesNotExist:
-        return redirect('not_found')
+        return not_found(request)
 
 @login_required
 def search(request):
@@ -95,8 +95,8 @@ def search_urls(request):
     }
     return JsonResponse(data)
 
-def not_found(request):
-    return render(request, 'not_found.html') 
+def not_found(request, exception=None):
+    return render(request, 'not_found.html', status=404)
 
 def robots_txt(request):
     lines = [
