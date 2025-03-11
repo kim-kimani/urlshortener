@@ -4,8 +4,24 @@
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="theme-color" content="#007bff">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="AVTR">
+        <link rel="apple-touch-icon" href="{% static 'images/icons/icon-192x192.png' %}">
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="{% static 'images/icons/icon-192x1921.png' %}">
+
+        <!-- Android Chrome Icon -->
+        <link rel="icon" sizes="192x192" href="{% static 'images/icons/icon-192x192.png' %}">
+
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+        <link rel="manifest" href="{% static 'manifest.json' %}">
 
         <!-- Fonts -->
         <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
@@ -58,6 +74,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Add your JavaScript for form submission here
         });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{% static "js/service-worker.js" %}')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

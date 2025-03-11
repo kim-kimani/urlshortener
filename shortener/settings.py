@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'urlsapp.middleware.AutoLoginMiddleware',
+    'urlsapp.middleware.RobotsMiddleware',
+    'urlsapp.middleware.XRobotsTagMiddleware',
 ]
 
 ROOT_URLCONF = 'shortener.urls'

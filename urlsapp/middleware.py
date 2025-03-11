@@ -2,6 +2,8 @@ from django.utils.timezone import now
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
+
 
 class AutoLoginMiddleware:
     def __init__(self, get_response):
@@ -19,4 +21,22 @@ class AutoLoginMiddleware:
                 request.session.set_expiry(365 * 24 * 60 * 60)  # 1 year
 
         response = self.get_response(request)
+        return response
+    
+class RobotsMiddleware(MiddlewareMixin):
+    def process_response(self, request, response):
+        if response.status_code == 200 and "text/html" in response.get('Content-Type', ''):
+            response.content = response.content.replace(
+                b'</head>',
+                b'<meta name="robots" content="noindex, nofollow, noarchive, nosnippet"></head>'
+            )
+        return response
+    
+class XRobotsTagMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response["X-Robots-Tag"] = "noindex, nofollow, noarchive, nosnippet"
         return response

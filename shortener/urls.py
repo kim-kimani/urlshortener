@@ -20,9 +20,11 @@ from urlsapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', views.robots_txt, name='robots_txt'),
     path('shorten/', views.shorten, name='shorten'),
     path('search/', views.search, name='search'),
     path('', views.index, name='index'),
     path('not-found/', views.not_found, name='not_found'),
     path('<str:short_code>/', views.redirect_view, name='redirect'),
+    
 ]
