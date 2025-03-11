@@ -15,7 +15,7 @@ class URL(models.Model):
     title = models.CharField(max_length=255, blank=True)
     
     def get_short_url(self):
-        return f"http://auvt.cc/{self.short_code}"
+        return f"http://127.0.0.1:8000/{self.short_code}"
     
     def save(self, *args, **kwargs):
         if not self.short_code:

@@ -29,7 +29,7 @@
                 <nav class="site-nav">
                     <a href="{% url 'index' %}" class="btn-nav {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a>
                     <a href="{% url 'shorten' %}" class="btn-nav {% if request.resolver_match.url_name == 'shorten' %}active{% endif %}">Shorten URL</a>
-                    <a href="{% url 'not_found' %}" class="btn-nav {% if request.resolver_match.url_name == 'not_found' %}active{% endif %}">Search</a>
+                    <a href="{% url 'search' %}" class="btn-nav {% if request.resolver_match.url_name == 'search' %}active{% endif %}">Search</a>
                 </nav>
             </div>
         </header>

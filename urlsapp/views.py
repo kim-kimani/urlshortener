@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
@@ -18,8 +19,8 @@ def admin_login(request):
     return redirect('/admin/')
 
 def index(request):
-    urls = URL.objects.all().order_by('-created_at')
-    return render(request, 'index.html', {'urls': urls})
+    
+    return render(request, 'index.html')
 
 @login_required
 def shorten(request):
@@ -62,18 +63,19 @@ def redirect_view(request, short_code):
         url.save()
         return redirect(url.original_url)
     except URL.DoesNotExist:
-        return HttpResponseRedirect('/')
-    
-def not_found(request):
+        return redirect('not_found')
+
+@login_required
+def search(request):
     urls = URL.objects.all().order_by('-created_at')
     query = request.GET.get('q', '')
     context = {
         'urls': urls,
         'query': query
     }
-    return render(request, 'not_found.html', context)
+    return render(request, 'search.html', context)
 
-def search(request):
+def search_urls(request):
     query = request.GET.get('q', '')
     if query:
         urls = URL.objects.filter(original_url__icontains=query) | URL.objects.filter(title__icontains=query)
@@ -92,3 +94,6 @@ def search(request):
         ]
     }
     return JsonResponse(data)
+
+def not_found(request):
+    return render(request, 'not_found.html') 

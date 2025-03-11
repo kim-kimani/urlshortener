@@ -77,12 +77,8 @@ WSGI_APPLICATION = 'shortener.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'autovete_shortener',
-        'USER': 'autovete_shortener',
-        'PASSWORD': 'Sr01700_/_*',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -124,6 +120,10 @@ USE_TZ = True
 # Static files configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
+
+STATICFILES_DIRS = [
+    'shortener/static',
+]
 
 # Directory where collectstatic will gather files for production
 # Media files (for user-uploaded content)

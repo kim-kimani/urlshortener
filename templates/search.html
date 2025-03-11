@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <form id="search-form">
+        <input type="text" id="search-input" placeholder="Search by title or original URL" value="{{ query }}">
+    </form>
+    
+    <h2>Existing Short URLs</h2>
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    
+                    <th>Title</th>
+                    <th>Short URL</th>
+                    <th>Created At</th>
+                    <th>Clicks</th>
+                    <th>Original URL</th>
+                </tr>
+            </thead>
+            <tbody id="urls-tbody">
+                {% for url in urls %}
+                <tr data-original-url="{{ url.original_url }}" class="url-row">
+                    <td data-label="Title">{{ url.title }}</td>
+                    
+                    <td data-label="Short URL">{{ url.get_short_url }}</td>
+                    <td data-label="Created At">{{ url.created_at|date:"M d, Y" }}</td>
+                    <td data-label="Clicks">{{ url.click_count }}</td>
+                    
+                    <td data-label="Original URL">{{ url.original_url }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p id="no-results" style="display: none; text-align: center; color: red;">No URLs match your search query.</p>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    document.getElementById('search-input').addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#urls-tbody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const originalUrl = row.querySelector('[data-label="Original URL"]').textContent.toLowerCase();
+            const shortUrl = row.querySelector('[data-label="Short URL"]').textContent.toLowerCase();
+            const title = row.querySelector('[data-label="Title"]').textContent.toLowerCase();
+
+            if (originalUrl.includes(query) || shortUrl.includes(query) || title.includes(query)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Show "No Results" message when nothing is found
+        document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+
+    // Prevent form submission to avoid page reload
+    document.getElementById('search-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+    });
+
+    // Redirect to Original URL on card click
+    document.querySelectorAll('.url-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const originalUrl = row.getAttribute('data-original-url');
+            window.location.href = originalUrl;
+        });
+    });
+</script>
+
+{% endblock %}
